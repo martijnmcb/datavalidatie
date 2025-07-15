@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import re
@@ -82,14 +81,13 @@ if uploaded_file:
                 # Postcode-controle met slimme splitsing
                 if kolomnaam in postcode_kolommen:
                     if value_str.strip():
-                        if any(sep in value_str for sep in [",", ";", "|"]):
-                            delen = re.split(r"[ ,;|]+", value_str.strip())
-                        else:
-                            delen = [value_str.strip()]
+                        delen = re.split(r"\s*[,;|]\s*", value_str.strip())
+                        ongeldig_delen = []
                         for deel in delen:
-                            if deel and not re.match(r"^[1-9][0-9]{3}\s?[A-Z]{2}$", deel):
-                                fouttypes.append("Ongeldige postcode")
-                                break
+                            if not re.match(r"^[1-9][0-9]{3}\s?[A-Z]{2}$", deel):
+                                ongeldig_delen.append(deel)
+                        if ongeldig_delen:
+                            fouttypes.append(f"Ongeldige postcode(s): {', '.join(ongeldig_delen)}")
 
 
 
